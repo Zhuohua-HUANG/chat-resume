@@ -2,4 +2,8 @@ __pycache__
 .env
 .vscode
 output
-zlm/templates/*_resume.tex
+resume_tailor/templates/*_resume.tex
+resume_tailor/templates/*_resume.pdf
+resume_tailor/templates/*_resume.out
+resume_tailor/templates/*_resume.log
+resume_tailor/templates/*_resume.aux

@@ -4,9 +4,9 @@ import shutil
 import streamlit as st
 
 
-from zlm import AutoApplyModel
-from zlm.utils.utils import display_pdf, download_pdf, read_file, read_json
-from zlm.utils.metrics import jaccard_similarity, overlap_coefficient, cosine_similarity
+from resume_tailor import AutoApplyModel
+from resume_tailor.utils.utils import display_pdf, download_pdf, read_file, read_json
+from resume_tailor.utils.metrics import jaccard_similarity, overlap_coefficient, cosine_similarity
 
 st.set_page_config(
     page_title="Resume Generator",

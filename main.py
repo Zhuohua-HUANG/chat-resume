@@ -1,15 +1,5 @@
-"""
------------------------------------------------------------------------
-File: main.py
-Creation Time: Nov 24th 2023 7:04 pm
-Author: Saurabh Zinjad
-Developer Email: zinjadsaurabh1997@gmail.com
-Copyright (c) 2023 Saurabh Zinjad. All rights reserved | GitHub: Ztrimus
------------------------------------------------------------------------
-"""
-
 import argparse
-from zlm import AutoApplyModel
+from resume_tailor import AutoApplyModel
 
 
 def create_resume_cv(url, master_data, api_key, provider, downloads_dir):

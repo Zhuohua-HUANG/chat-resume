@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="job_hunter" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="job-llm" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="bigdl" project-jdk-type="Python SDK" />
 </project>

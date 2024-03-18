@@ -1,15 +1,67 @@
-
 import json
 import textwrap
+import os
 import pandas as pd
 import streamlit as st
 from openai import OpenAI
 import google.generativeai as genai
-from zlm.utils.utils import parse_json_markdown
+from resume_tailor.utils.utils import parse_json_markdown
+from bigdl.llm.langchain.llms import TransformersLLM
+from bigdl.llm.langchain.embeddings import TransformersEmbeddings
+from langchain.vectorstores import FAISS
 
 GPT_MODEL = "gpt-3.5-turbo-0125" # gpt-3.5-turbo-0125 or gpt-4-1106-preview
 
+LOCAL_LLM_VERSION="llama-2-7b-chat-hf-INT4"
+
 # TODO: Add BigDL-LLM
+class BigDL_LLM:
+    def __init__(self, system_prompt):
+        system_prompt = system_prompt.strip()
+        if system_prompt:
+            self.system_prompt = system_prompt
+        resume_tailor_folder_path=os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+        model_path = os.path.join(
+            resume_tailor_folder_path,
+            'checkpoints/' + LOCAL_LLM_VERSION
+        )
+        self.llm = TransformersLLM.from_model_id_low_bit(model_path)
+        self.llm.streaming = False
+
+        self.generation_kwargs = {
+            "max_new_tokens": 4096,
+            "top_p": 0.9,       # delete the low possibility answer
+            "temperature": 0.4,
+            "repetition_penalty": 1.2,
+            "do_sample": True,
+        }
+        embedding_path = os.path.join(
+            resume_tailor_folder_path,
+            'checkpoints/' + 'all-MiniLM-L12-v2'
+        )
+        self.embeddings = TransformersEmbeddings.from_model_id(
+            model_id=embedding_path)
+
+
+    def get_response(self, prompt, need_json_output=False):
+        B_INST, E_INST = "[INST]", "[/INST]"
+        B_SYS, E_SYS = "<<SYS>>\n", "\n<</SYS>>\n\n"
+        prompt = f"{B_INST} {B_SYS} {self.system_prompt} {E_SYS} {prompt} {E_INST}"
+
+        content = self.llm.invoke(prompt, **self.generation_kwargs)
+        if need_json_output:
+            return parse_json_markdown(content)
+        else:
+            return content
+
+    def get_embedding(self, text):
+        try:
+            vector_embedding = FAISS.from_texts( texts = text, embedding=self.embeddings)
+            return vector_embedding
+        except Exception as e:
+            print(e)
+            return None
+
 
 class ChatGPT:
     def __init__(self, api_key, system_prompt):
@@ -169,13 +221,13 @@ class Llama2:
         # Special format required by the Llama2 Chat Model where we can use system messages to provide more context about the task
         prompt = f"{B_INST} {B_SYS} {self.system_prompt} {E_SYS} {prompt_text} {E_INST}"
 
-        prompt_ids = tokenizer(prompt, return_tensors="pt")
+        prompt_ids = self.tokenizer(prompt, return_tensors="pt")
         prompt_size = prompt_ids['input_ids'].size()[1]
 
         generate_ids = self.model.generate(prompt_ids.input_ids.to(self.model.device), **self.generation_kwargs)
         generate_ids = generate_ids.squeeze()
 
-        response = tokenizer.decode(generate_ids.squeeze()[prompt_size+1:], skip_special_tokens=True).strip()
+        response = self.tokenizer.decode(generate_ids.squeeze()[prompt_size+1:], skip_special_tokens=True).strip()
 
         if need_json_output:
                 return parse_json_markdown(response)

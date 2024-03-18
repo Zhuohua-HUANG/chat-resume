@@ -5,10 +5,10 @@ import streamlit as st
 
 import numpy as np
 
-from zlm.utils.llm_models import ChatGPT, Gemini, TogetherAI
-from zlm.utils.data_extraction import get_url_content, extract_plain_text_from_pdf
-from zlm.utils.latex_ops import json_to_latex_to_pdf
-from zlm.utils.utils import (
+from resume_tailor.utils.llm_models import ChatGPT, Gemini, TogetherAI
+from resume_tailor.utils.data_extraction import get_url_content, extract_plain_text_from_pdf
+from resume_tailor.utils.latex_ops import json_to_latex_to_pdf
+from resume_tailor.utils.utils import (
     get_default_download_folder,
     key_value_chunking,
     measure_execution_time,
@@ -20,7 +20,7 @@ from zlm.utils.utils import (
     get_prompt,
     DocumentType
 )
-from zlm.utils.metrics import jaccard_similarity, overlap_coefficient, cosine_similarity, vector_embedding_similarity
+from resume_tailor.utils.metrics import jaccard_similarity, overlap_coefficient, cosine_similarity, vector_embedding_similarity
 
 
 module_dir = os.path.dirname(__file__)
