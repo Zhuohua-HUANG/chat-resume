@@ -14,7 +14,6 @@ GPT_MODEL = "gpt-3.5-turbo-0125" # gpt-3.5-turbo-0125 or gpt-4-1106-preview
 
 LOCAL_LLM_VERSION="llama-2-7b-chat-hf-INT4"
 
-# TODO: Add BigDL-LLM
 class BigDL_LLM:
     def __init__(self, system_prompt):
         system_prompt = system_prompt.strip()
@@ -47,7 +46,7 @@ class BigDL_LLM:
         B_INST, E_INST = "[INST]", "[/INST]"
         B_SYS, E_SYS = "<<SYS>>\n", "\n<</SYS>>\n\n"
         prompt = f"{B_INST} {B_SYS} {self.system_prompt} {E_SYS} {prompt} {E_INST}"
-
+        # TODO: Complete the logic to limit the output to JSON
         content = self.llm.invoke(prompt, **self.generation_kwargs)
         if need_json_output:
             return parse_json_markdown(content)
