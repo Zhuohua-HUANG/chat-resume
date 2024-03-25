@@ -14,7 +14,7 @@ from pathlib import Path
 from datetime import datetime
 from langchain_core.output_parsers import JsonOutputParser
 OS_SYSTEM = platform.system().lower()
-
+import streamlit as st
 
 
 class DocumentType(Enum):
@@ -283,6 +283,7 @@ def parse_json_markdown(json_string: str) -> dict:
 
         return parsed
     except Exception as e:
+        print("parse_json_markdown")
         print(e)
         return None
 

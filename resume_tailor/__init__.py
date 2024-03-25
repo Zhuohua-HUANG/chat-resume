@@ -5,7 +5,7 @@ import streamlit as st
 
 import numpy as np
 
-from resume_tailor.utils.llm_models import ChatGPT, Gemini, TogetherAI
+from resume_tailor.utils.llm_models import BigDL_LLM, ChatGPT, Gemini, BIGDL, GPT_3_5, GPT_4, GEMINI_PRO
 from resume_tailor.utils.data_extraction import get_url_content, extract_plain_text_from_pdf
 from resume_tailor.utils.latex_ops import json_to_latex_to_pdf
 from resume_tailor.utils.utils import (
@@ -53,21 +53,22 @@ class AutoApplyModel:
     def __init__(
         self, api_key: str, provider: str, downloads_dir: str = get_default_download_folder()
     ):
-
+        # default is BigDL
         if provider is None or provider.strip() == "":
-            self.provider = "openai"
+            self.provider = BIGDL
         else:
             self.provider = provider
 
-        if api_key is None or api_key.strip() == "os":
-            if provider == "openai":
-                self.api_key = os.environ.get("OPENAI_API_KEY")
-            elif provider == "together":
-                self.api_key = os.environ.get("TOGETHER_KEY")
-            elif provider == "gemini":
-                self.api_key = os.environ.get("GEMINI_API_KEY")
+        if self.provider == BIGDL:
+            self.api_key = None
         else:
-            self.api_key = api_key
+            if api_key is None or api_key.strip() == "os":
+                if provider == GPT_4 or provider == GPT_3_5:
+                    self.api_key = os.environ.get("OPENAI_API_KEY")
+                elif provider == GEMINI_PRO:
+                    self.api_key = os.environ.get("GEMINI_API_KEY")
+            else:
+                self.api_key = api_key
 
         if downloads_dir is None or downloads_dir.strip() == "":
             self.downloads_dir = get_default_download_folder()
@@ -114,10 +115,10 @@ class AutoApplyModel:
             
         # qa = RetrievalQA(vector_store=user_embeddings, query_vector_store=job_embeddings, k=3)
 
-    def resume_to_json(self, pdf_path):
+    def resume_pdf_to_json(self, pdf_path):
         """
         Converts a resume in PDF format to JSON format.
-        Prompts: resume-extractor.txt
+        Prompts: extract-resume.txt
 
         Args:
             pdf_path (str): The path to the PDF file.
@@ -125,20 +126,25 @@ class AutoApplyModel:
         Returns:
             dict: The resume data in JSON format.
         """
-        system_prompt = get_prompt(
-            os.path.join(prompt_path, "resume-extractor.txt")
-        )
+        if self.provider == BIGDL:
+            system_prompt = get_prompt(
+                os.path.join(prompt_path, "extract-resume_BigDL.txt")
+            )
+        else:
+            system_prompt = get_prompt(
+                os.path.join(prompt_path, "extract-resume.txt")
+            )
         llm = self.get_llm_instance(system_prompt)
         resume_text = extract_plain_text_from_pdf(pdf_path)
         resume_json = llm.get_response(resume_text, need_json_output=True)
         return resume_json
     
     def get_llm_instance(self, system_prompt):
-        if self.provider == "openai":
-            return ChatGPT(api_key=self.api_key, system_prompt=system_prompt)
-        elif self.provider == "together":
-            return TogetherAI(api_key=self.api_key, system_prompt=system_prompt)
-        elif self.provider == "gemini":
+        if self.provider == BIGDL:
+            return BigDL_LLM(system_prompt=system_prompt)
+        elif self.provider == GPT_3_5 or self.provider == GPT_4:
+            return ChatGPT(gpt_type= self.provider, api_key=self.api_key, system_prompt=system_prompt)
+        elif self.provider == GEMINI_PRO:
             return Gemini(api_key=self.api_key, system_prompt=system_prompt)
         else:
             raise Exception("Invalid LLM Provider")
@@ -161,7 +167,7 @@ class AutoApplyModel:
 
         # Read user data
         if os.path.splitext(user_data_path)[1] == ".pdf":
-            user_data = self.resume_to_json(user_data_path)
+            user_data = self.resume_pdf_to_json(user_data_path)
         elif os.path.splitext(user_data_path)[1] == ".json":
             user_data = read_json(user_data_path)
         else:
@@ -333,6 +339,9 @@ class AutoApplyModel:
                     st.markdown(f"**{section.upper()} Section**")
                     st.write(response)
 
+            if is_st:
+                st.write("Finish Resume Building")
+
             resume_details_dict['keywords'] = job_details['keywords']
             
             resume_josn_path = job_doc_name(job_details, self.downloads_dir, DocumentType.Resume)
@@ -340,14 +349,16 @@ class AutoApplyModel:
             write_json(resume_josn_path, resume_details_dict)
             resume_pdf_path = resume_josn_path.replace(".json", ".pdf")
             # st.write(f"resume_path: {resume_path}")
-
+            if is_st:
+                st.write("Converting JSON resume to latex and to pdf")
             resume_pdf_path, resume_tex_path, resume_latex = json_to_latex_to_pdf(resume_details_dict, resume_pdf_path)
             # st.write(f"resume_pdf_path: {resume_pdf_path}")
 
             return resume_pdf_path, resume_details_dict
         except Exception as e:
             print(e)
-            st.write("Error: \n\n",e)
+            if is_st:
+                st.write("Error: \n\n",e)
             return resume_pdf_path, resume_details_dict
 
     def resume_cv_pipeline(self, job_url: str, user_data_path: str = demo_data_path):

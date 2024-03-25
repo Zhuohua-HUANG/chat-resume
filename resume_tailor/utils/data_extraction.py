@@ -27,7 +27,6 @@ def get_url_content(url: str):
             string = string.strip()
             if string:
                 text_content += string + "\n"
-
         return text_content
     except Exception as e:
         print(e)

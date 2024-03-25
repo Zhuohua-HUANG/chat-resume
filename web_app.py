@@ -7,21 +7,22 @@ import streamlit as st
 from resume_tailor import AutoApplyModel
 from resume_tailor.utils.utils import display_pdf, download_pdf, read_file, read_json
 from resume_tailor.utils.metrics import jaccard_similarity, overlap_coefficient, cosine_similarity
+from resume_tailor.utils.llm_models import BIGDL, GPT_3_5, GPT_4, GEMINI_PRO
 
 st.set_page_config(
-    page_title="Resume Generator",
+    page_title="Resume Tailor",
     page_icon="📑",
     menu_items={
-        'Get help': 'https://www.youtube.com/watch?v=Agl7ugyu1N4',
-        'About': 'https://github.com/Ztrimus/job-llm',
-        'Report a bug': "https://github.com/Ztrimus/job-llm/issues",
+        # 'Get help': 'https://www.youtube.com',
+        'About': 'https://github.com/Zhuohua-HUANG/resume-tailor-llm?tab=readme-ov-file',
+        'Report a bug': "https://github.com/Zhuohua-HUANG/resume-tailor-llm/issues",
     }
 )
 
 try:
     # st.markdown("<h1 style='text-align: center; color: grey;'>Get :green[Job Aligned] :orange[Killer] Resume :sunglasses:</h1>", unsafe_allow_html=True)
-    st.header("Get :green[Job Aligned] :orange[Personalized] Resume", divider='rainbow')
-    # st.subheader("Skip the writing, land the interview")
+    st.header("Your :green[Personalized] :orange[Resume Assistant]", divider='rainbow')
+    st.subheader("One Click, Carrer Quick")
 
     col_text, col_url,_,_ = st.columns(4)
     with col_text:
@@ -39,9 +40,11 @@ try:
 
     col_1, col_2 = st.columns(2)
     with col_1:
-        provider = st.selectbox("Select LLM provider([OpenAI](https://openai.com/blog/openai-api), [Gemini Pro](https://ai.google.dev/)):", ["gemini-pro", "gpt-3"])
-    with col_2:
-        api_key = st.text_input("Enter API key:", type="password")
+        provider = st.selectbox("Select LLM provider([OpenAI](https://openai.com/blog/openai-api), [Gemini Pro](https://ai.google.dev/), [BigDL](https://github.com/intel-analytics/BigDL)):", [BIGDL,GPT_4,GPT_3_5, GEMINI_PRO ])
+    api_key = ""
+    if provider in [GPT_4,GPT_3_5, GEMINI_PRO]:
+        with col_2:
+            api_key = st.text_input("Enter API key:", type="password")
     st.markdown("<sub><sup>💡 GPT-4 is recommended for better results.</sup></sub>", unsafe_allow_html=True)
 
     # Buttons side-by-side with styling
@@ -59,6 +62,7 @@ try:
             get_cover_letter_button = True
 
     if get_resume_button or get_cover_letter_button:
+        # check valid input
         if file is None:
             st.toast(":red[Upload user's resume or work related data to get started]", icon="⚠️")
             st.stop()
@@ -67,18 +71,16 @@ try:
             st.toast(":red[Please enter a job posting URL or paste the job description to get started]", icon="⚠️") 
             st.stop()
         
-        if api_key == "":
+        if provider in [GPT_4,GPT_3_5, GEMINI_PRO] and api_key == "":
             st.toast(":red[Please enter the API key to get started]", icon="⚠️")
             st.stop()
-        
+        # run the workflow if inputs are valid
         if file is not None and (url != "" or text != ""):
             download_resume_path = os.path.join(os.path.dirname(__file__), "output")
 
             # st.write(f"download_resume_path: {download_resume_path}")
 
-            llm_mapping = {'gpt-3':'openai', 'gemini-pro':'gemini'}
-
-            resume_llm = AutoApplyModel(api_key=api_key, provider=llm_mapping[provider], downloads_dir=download_resume_path)
+            resume_llm = AutoApplyModel(api_key=api_key, provider=provider, downloads_dir=download_resume_path)
             
             # Save the uploaded file
             os.makedirs("uploads", exist_ok=True)
