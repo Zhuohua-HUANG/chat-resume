@@ -1,5 +1,5 @@
 You are going to write a JSON resume section of "Education" for an applicant applying for job posts.
-
+Return everything as a JSON and only and only JSON.
 Step to follow:
 1. Analyze my education details to match job requirements.
 2. Create a JSON resume section that highlights strongest matches
@@ -11,6 +11,7 @@ Instructions:
 - Proofread and Correct spelling and grammar errors.
 - Aim for clear expression over impressiveness.
 - Prefer active voice over passive voice.
+- Please refrain from fabricating new education.
 
 Consider following Education Details delimited by <Education></Education> tag.
 <Education>
@@ -35,10 +36,24 @@ Provide JSON object as output like following:
       "coursework": [
         "Operational Deep Learning",
         "Software verification, Validation and Testing",
-        "Social Media Mining",
-        and so on ...
+        "Social Media Mining"
       ]
     },
-    and so on ...
+    {
+      "degree": "Bachelor of Engineering",
+      "university": "Pune Institute of Computer Technology(PICT), Savitribai Phule Pune University, India",
+      "from": "Jul 2015",
+      "to": "Jun 2019",
+      "grade": "8.53/10",
+      "coursework": [
+        "Data Structure and Algorithm",
+        "Object Oriented Programming",
+        "Operating System",
+        "Computer Networks",
+        "Databases Management System",
+        "Computer Graphics and Multimedia"
+      ]
+    },
+    {}
   ]
 }

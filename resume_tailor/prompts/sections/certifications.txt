@@ -1,5 +1,5 @@
 You are going to write a JSON resume section of "Certifications" for an applicant applying for job posts.
-
+Return everything as a JSON and only and only JSON.
 Step to follow:
 1. Analyze my certification details to match job requirements.
 2. Create a JSON resume section that highlights strongest matches
@@ -7,7 +7,8 @@ Step to follow:
 
 Instructions:
 1. Focus: Include relevant certifications aligned with the job description.
-2. Proofreading: Ensure impeccable spelling and grammar.
+2. Honesty: Please refrain from fabricating new certifications.
+3. Proofreading: Ensure impeccable spelling and grammar.
 
 Consider following Certification Details delimited by <CERTIFICATIONS></CERTIFICATIONS> tag.
 <CERTIFICATIONS>
@@ -33,6 +34,6 @@ Provide JSON object as output like following:
       "by": "The Hong Kong University of Science and Technology.",
       "link": "https://www.coursera.org/account/accomplishments/verify/TYMQX23D4HRQ"
     },
-    and so on ...
+    {}
   ]
 }

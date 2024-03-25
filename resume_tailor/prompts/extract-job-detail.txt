@@ -14,5 +14,5 @@ Output:
     "required_qualifications": "RESULT",
     "preferred_qualifications": "RESULT",
     "company_name": "RESULT",
-    "company_info": "RESULT",
+    "company_info": "RESULT"
 }
