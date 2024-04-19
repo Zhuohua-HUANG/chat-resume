@@ -9,7 +9,7 @@ from bigdl.llm.langchain.llms import TransformersLLM
 from langchain.vectorstores import FAISS
 from openai import OpenAI
 
-from resume_tailor.utils.utils import parse_json_markdown
+from resume_tailor.utils import parse_json_markdown
 
 BIGDL = "BigDL-Llama-2-7b-chat"
 GPT_3_5 = "gpt-3.5-turbo-0125"

@@ -1,5 +1,5 @@
 import argparse
-from resume_tailor import AutoApplyModel
+from resume_tailor.resume_builder import ResumeBuilder
 from resume_tailor.utils.llm_models import BIGDL, GPT_4, GPT_3_5, GEMINI_PRO
 
 
@@ -17,7 +17,7 @@ def create_resume_cv(url, master_data, api_key, provider, downloads_dir):
     Returns:
         None
     """
-    job_llm = AutoApplyModel(api_key, provider, downloads_dir)
+    job_llm = ResumeBuilder(api_key, provider, downloads_dir)
     job_llm.resume_cv_pipeline(url, master_data)
 
 

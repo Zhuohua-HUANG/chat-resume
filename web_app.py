@@ -3,9 +3,8 @@ import json
 import shutil
 import streamlit as st
 
-
-from resume_tailor import AutoApplyModel
-from resume_tailor.utils.utils import display_pdf, download_pdf, read_file, read_json
+from resume_tailor.resume_builder import ResumeBuilder
+from resume_tailor.utils import display_pdf, download_pdf, read_file, read_json
 from resume_tailor.utils.metrics import jaccard_similarity, overlap_coefficient, cosine_similarity
 from resume_tailor.utils.llm_models import BIGDL, GPT_3_5, GPT_4, GEMINI_PRO
 
@@ -22,7 +21,8 @@ st.set_page_config(
 try:
     # st.markdown("<h1 style='text-align: center; color: grey;'>Get :green[Job Aligned] :orange[Killer] Resume :sunglasses:</h1>", unsafe_allow_html=True)
     st.header("Your :green[Personalized] :orange[Resume Assistant]", divider='rainbow')
-    st.subheader("One Click, Carrer Quick")
+    st.subheader("Zhuohua Huang, Jinghao Liu")
+    # st.subheader("Zhuohua Huang, Ziyi Wang, Yan Huang")
 
     col_text, col_url,_,_ = st.columns(4)
     with col_text:
@@ -80,7 +80,7 @@ try:
 
             # st.write(f"download_resume_path: {download_resume_path}")
 
-            resume_llm = AutoApplyModel(api_key=api_key, provider=provider, downloads_dir=download_resume_path)
+            resume_llm = ResumeBuilder(api_key=api_key, provider=provider, downloads_dir=download_resume_path)
             
             # Save the uploaded file
             os.makedirs("uploads", exist_ok=True)
@@ -135,6 +135,7 @@ try:
                 
                 display_pdf(resume_path, type="image")
                 st.toast("Resume generated successfully!", icon="✅")
+
                 # Calculate metrics
                 st.subheader("Resume Metrics")
                 for metric in ['overlap_coefficient', 'cosine_similarity']:
@@ -190,5 +191,3 @@ except Exception as e:
     st.error(f"An error occurred: {e}")
     st.markdown("<h3 style='text-align: center;'>Please try again!</h3>", unsafe_allow_html=True)
     st.stop()
-
-st.link_button("Report Feedback, Issues, or Contribute!", "https://github.com/Ztrimus/job-llm/issues", use_container_width=True)
