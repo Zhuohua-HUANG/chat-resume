@@ -10,7 +10,7 @@
  - **CPU: Intel i7 or above**
  - OS : Windows, Linux, Mac
  - Python : 3.9.18
- - LLM API key: [OpenAI](https://openai.com/pricing) OR [Gemini Pro](https://ai.google.dev/)
+ - LLM API key: [OpenAI](https://openai.com/pricing) 
 
 ### 2.4. Setup & Run Code - Use as Project
  1. Create and activate python environment to avoid any package dependency conflict.
@@ -24,12 +24,6 @@
       ```bash
       pip install -r requirements.txt
       ```
-      OR
-    - Try poetry install
-       ```bash
-       pip install poetry
-       poetry install
-       ```
 
 3. We also need to install following packages to conversion of latex to pdf
     - For windows
