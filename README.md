@@ -3,16 +3,14 @@
 [![](./resources/structure.png)](./resources/structure.png)
 
 
-## 2. Setup, Installation and Usage
-
-### 2.1. Prerequisites
+## 1. Prerequisites
 
  - **CPU: Intel i7 or above**
  - OS : Windows, Linux, Mac
  - Python : 3.9.18
  - LLM API key: [OpenAI](https://openai.com/pricing) 
 
-### 2.4. Setup & Run Code - Use as Project
+## 2. Setup & Run Code - Use as Project
 1. Create and activate python environment to avoid any package dependency conflict.
    ```bash
    conda create -n job-llm python=3.11.6
