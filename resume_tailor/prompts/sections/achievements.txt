@@ -29,6 +29,6 @@ Provide only JSON object as output like following:
   "achievements": [
     "Won E-yantra Robotics Competition 2018 - IITB.",
     "1st prize in “Prompt Engineering Hackathon 2023 for Humanities”",
-    "Received the 'Extra Miller - 2021' award at Winjit Technologies for outstanding performance. "
+    ...
   ]
 }

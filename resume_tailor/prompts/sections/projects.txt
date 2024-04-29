@@ -6,19 +6,19 @@ Step to follow:
 3. Optimize JSON section for clarity and relevance to the job description.
 
 Instructions:
-1. Focus: Craft three highly relevant project experiences aligned with the job description.
-2. Content:
-  2.1. Bullet points: 3 per experience, closely mirroring job requirements.
-  2.2. Impact: Quantify each bullet point for measurable results.
-  2.3. Storytelling: Utilize STAR methodology (Situation, Task, Action, Result) implicitly within each bullet point.
-  2.4. Action Verbs: Showcase soft skills with strong, active verbs.
-  2.5. Honesty: Prioritize truthfulness and objective language. Please refrain from fabricating new project experiences.
-  2.6. Structure: Each bullet point follows "Did X by doing Y, achieved Z" format.
-  2.7. Specificity: Prioritize relevance to the specific job over general achievements.
-3. Style:
-  3.1. Clarity: Clear expression trumps impressiveness.
-  3.2. Voice: Use active voice whenever possible.
-  3.3. Proofreading: Ensure impeccable spelling and grammar.
+1. Content:
+  1.1. Bullet points: 3 points per experience, closely mirroring job requirements.
+  1.2. Impact: Quantify each bullet point for measurable results.
+  1.3. Storytelling: Utilize STAR methodology (Situation, Task, Action, Result) implicitly within each bullet point.
+  1.4. Action Verbs: Showcase soft skills with strong, active verbs.
+  1.5. Honesty: Prioritize truthfulness and objective language. Please refrain from fabricating new project experiences.
+  1.6. Structure: Each bullet point follows "Did X by doing Y, achieved Z" format.
+  1.7. Specificity: Prioritize relevance to the specific job over general achievements.
+2. Style:
+  2.1. Clarity: Clear expression trumps impressiveness.
+  2.2. Voice: Use active voice whenever possible.
+  2.3. Proofreading: Ensure impeccable spelling and grammar.
+3. Ensure that each experience is optimized and outputted.
 
 Consider following Project Details delimited by <PROJECTS></PROJECTS> tag.
 <PROJECTS>
@@ -38,7 +38,7 @@ Provide JSON object as output like following:
           "name": "Search Engine for All file types - Sunhack Hackathon - Meta & Amazon Sponsored",
           "type": "Hackathon",
           "link": "https://devpost.com/software/team-soul-1fjgwo",
-          "from": "Nov 2023",
+          "from_date": "Nov 2023",
           "to": "Nov 2023",
           "description": [
              "Devised a TabNet Classifier Model having 98.7% accuracy in detecting forest fire through IoT sensor data, deployed on AWS and edge devices 'Silvanet Wildfire Sensors' using technologies TinyML, Docker, Redis, and celery.",
@@ -46,6 +46,6 @@ Provide JSON object as output like following:
             "Performed Model Exploration, Analysis, and Optimization."
           ]
         },
-        {}
+        ...
     ]
 }

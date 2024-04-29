@@ -107,8 +107,8 @@ def vector_embedding_similarity(llm, document1: str, document2: str) -> float:
     document1 = key_value_chunking(json.loads(document1))
     document2 = key_value_chunking(json.loads(document2))
     
-    emb_1 = llm.get_embedding(document1, task_type="retrieval_query")
-    emb_2 = llm.get_embedding(document2, task_type="retrieval_query")
+    emb_1 = llm.get_text_embedding(document1, task_type="retrieval_query")
+    emb_2 = llm.get_text_embedding(document2, task_type="retrieval_query")
 
     df1 = pd.DataFrame(emb_1.embedding.to_list())
     df2 = pd.DataFrame(emb_2.embedding.to_list())

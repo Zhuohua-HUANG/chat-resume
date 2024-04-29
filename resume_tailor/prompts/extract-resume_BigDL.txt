@@ -15,21 +15,13 @@ Provide JSON object as output like following example:
   "summary": "Versatile and self-driven professional with 4+ years of industrial experience in crafting production-ready AI Architecture and full-stack softwares through coherent analysis, and relentless focus on efficient solutions with meticulous execution.",
   "phone": "+1 444 555 6666",
   "email": "john.doe@gmail.com",
-  "media": {
-    "linkedin": "linkedin.com/in/johndoe",
-    "github": "github.com/johndoe",
-    "devpost": "devpost.com/johndoe",
-    "medium": "ztrimus.medium.com",
-    "leetcode": "leetcode.com/johndoe",
-    "dagshub": "https://dagshub.com/johndoe",
-    "kaggle": "https://www.kaggle.com/johndoe",
-    "instagram": "https://www.instagram.com/johndoe/"
-  },
+  "github": "github.com/johndoe",
+  "linkedin": "https://www.linkedin.com/in/zhuohua-huang-828bb9287/",
   "education": [
     {
       "degree": "Masters of Science - Computer Science (Thesis)",
       "university": "Arizona State University, Tempe, USA",
-      "from": "Aug 2023",
+      "from_date": "Aug 2023",
       "to": "May 2025",
       "grade": "3.8/4",
       "coursework": [
@@ -44,7 +36,7 @@ Provide JSON object as output like following example:
     {
       "degree": "Bachelor of Engineering",
       "university": "Pune Institute of Computer Technology(PICT), Savitribai Phule Pune University, India",
-      "from": "Jul 2015",
+      "from_date": "Jul 2015",
       "to": "Jun 2019",
       "grade": "8.53/10",
       "classes": [
@@ -75,7 +67,7 @@ Provide JSON object as output like following example:
     {
       "role": "Senior Machine Learning Engineer",
       "company": "Tiger Analytics, Bangalore, India",
-      "from": "Jun 2022",
+      "from_date": "Jun 2022",
       "to": "Jul 2023",
       "description": [
         "Spearheaded development of Data & CI/CD pipelines, Interactive Dashboards, Constraint-based ML Models, Web App, and Comprehensive Documentation for MSP Value Optimization in Petcare sector with a team of 8 analysts. (Team Leadership)",
@@ -86,7 +78,7 @@ Provide JSON object as output like following example:
     {
       "role": "Research Intern",
       "company": "IMATMI, Robbinsville, New Jersey (Remote)",
-      "from": "Mar 2019",
+      "from_date": "Mar 2019",
       "to": "Aug 2019",
       "description": [
         "Conducted research and developed a range of ML and statistical models to design analytical tools and streamline HR processes, optimizing talent management systems for increased efficiency.",
@@ -100,7 +92,7 @@ Provide JSON object as output like following example:
       "name": "Streamlining Job Applications with LLM Automation Pipeline",
       "type": "Project",
       "link": "https://pypi.org/project/zlm/",
-      "from": "Oct 2023",
+      "from_date": "Oct 2023",
       "to": "Dec 2023",
       "description": [
         "Make your job hunting experience easier by using LLMs to automate tasks like creating personalized resumes and cover letters tailored to specific jobs, as well as submitting applications, saving users time and effort.",
@@ -112,7 +104,7 @@ Provide JSON object as output like following example:
       "name": "Search Engine for All file types - Sunhack Hackathon - Meta & Amazon Sponsored",
       "type": "Hackathon",
       "link": "https://devpost.com/software/team-soul-1fjgwo",
-      "from": "Nov 2023",
+      "from_date": "Nov 2023",
       "to": "Nov 2023",
       "description": [
         "Big Data Awards in Python FAST API and angular development, providing efficient data access and retrieval.",

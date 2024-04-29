@@ -34,6 +34,6 @@ Provide JSON object as output like following:
       "by": "The Hong Kong University of Science and Technology.",
       "link": "https://www.coursera.org/account/accomplishments/verify/TYMQX23D4HRQ"
     },
-    {}
+    ...
   ]
 }

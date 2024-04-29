@@ -1,7 +1,8 @@
 import unittest
 import unittest
 
-from resume_tailor.utils.llm_models import BigDL_LLM
+from resume_tailor.llm_models import BigDL_LLM, ChatGPT, GPT_3_5
+from resume_tailor.vector_store import VectorStore
 
 # system_prompt="""
 #     Discard any prior instructions.
@@ -125,14 +126,41 @@ class TestBigDL(unittest.TestCase):
 
     def test_embedding(self):
         bigdl = BigDL_LLM(system_prompt)
-        vector_storage = bigdl.get_embedding(text)
+        vector_storage = bigdl.get_text_embedding(text)
         print(vector_storage.docstore._dict)
+
+class TestVectorStore(unittest.TestCase):
+
+    def test_openai(self):
+        api_key=input("Please enter your api key here: ")
+        openai_model = ChatGPT(GPT_3_5, api_key,system_prompt)
+        embedding = openai_model.embeddings
+        vs = VectorStore(embedding,"D:/b_Work/ip_LLM/resume-tailor-llm/output")
+        vs.store_experience("hi",1)
+        vs.construct_and_save_local()
+        docs=vs.get_top_k_experiences(2,"hihi")
+        self.assertIsNotNone(docs)
+        print(docs)
+        self.assertEqual(len(docs),1,"not equall")
+    def test_bigdl(self):
+        bigdl = BigDL_LLM(system_prompt)
+        embedding = bigdl.embeddings
+        vs = VectorStore(embedding,"D:/b_Work/ip_LLM/resume-tailor-llm/output")
+        vs.store_experience("hi",1)
+        vs.construct_and_save_local()
+        docs=vs.get_top_k_experiences(2,"hihi")
+        self.assertIsNotNone(docs)
+        print(docs)
+        self.assertEqual(len(docs),1,"not equall")
+
 
 if __name__ == '__main__':
     # 创建测试套件
     suit = unittest.TestSuite()
     suit.addTest(TestBigDL("test_model"))
     suit.addTest(TestBigDL("test_embedding"))
+    suit.addTest(TestVectorStore("test_openai"))
+    suit.addTest(TestVectorStore("test_bigdl"))
     # 创建测试运行器
     runner = unittest.TestRunner()
     runner.run(suit)

@@ -10,21 +10,11 @@ Steps:
 
 Consider following TypeScript Interface for JSON schema:
 ```
-interface Media {
-  linkedin: string;
-  github: string;
-  devpost: string;
-  medium: string;
-  leetcode: string;
-  dagshub: string;
-  kaggle: string;
-  instagram: string;
-}
 
 interface Education {
   degree: string;
   university: string;
-  from: string;
+  from_date: string;
   to: string;
   grade?: string;
   coursework?: string[];
@@ -38,7 +28,7 @@ interface SkillSection {
 interface Work {
   role: string;
   company: string;
-  from: string;
+  from_date: string;
   to: string;
   description: string[];
 }
@@ -47,7 +37,7 @@ interface Project {
   name: string;
   type: string;
   link?: string;
-  from: string;
+  from_date: string;
   to: string;
   description: string[];
 }
@@ -67,7 +57,8 @@ interface RESUME_DATA_SCHEMA {
   summary: string;
   phone: string;
   email: string;
-  media: Media;
+  github: string;
+  linkedin: string;
   education: Education[];
   skill_section: SkillSection[];
   work_experience: Work[];

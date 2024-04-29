@@ -8,11 +8,11 @@ title, keywords, purpose, duties_responsibilities, required_qualifications, pref
 Output:
 {
     "title": "RESULT", 
-    "keywords": "RESULT", 
+    "keywords": ["RESULT","RESULT"...],
     "purpose": "RESULT",
-    "duties_responsibilities": "RESULT",
-    "required_qualifications": "RESULT",
-    "preferred_qualifications": "RESULT",
+    "duties_responsibilities": ["RESULT","RESULT"...],
+    "required_qualifications": ["RESULT","RESULT"...],
+    "preferred_qualifications": ["RESULT","RESULT"...],
     "company_name": "RESULT",
     "company_info": "RESULT"
 }

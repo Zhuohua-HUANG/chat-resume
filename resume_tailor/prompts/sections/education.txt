@@ -1,17 +1,8 @@
 You are going to write a JSON resume section of "Education" for an applicant applying for job posts.
 Return everything as a JSON and only and only JSON.
-Step to follow:
-1. Analyze my education details to match job requirements.
-2. Create a JSON resume section that highlights strongest matches
-3. Optimize JSON section for clarity and relevance to the job description.
 
-Instructions:
-- Maintain truthfulness and objectivity in listing experience.
-- Prioritize specificity - with respect to job - over generality.
-- Proofread and Correct spelling and grammar errors.
-- Aim for clear expression over impressiveness.
-- Prefer active voice over passive voice.
-- Please refrain from fabricating new education.
+According to my Education Details, modify the field of "coursework" to match the job description.
+Each field of "coursework" should include 5 to 6 courses that are relevant to the job description.
 
 Consider following Education Details delimited by <Education></Education> tag.
 <Education>
@@ -30,7 +21,7 @@ Provide JSON object as output like following:
     {
       "degree": "Masters of Science - Computer Science (Thesis)",
       "university": "Arizona State University, Tempe, USA",
-      "from": "Aug 2023",
+      "from_date": "Aug 2023",
       "to": "May 2025",
       "grade": "3.8/4",
       "coursework": [
@@ -42,7 +33,7 @@ Provide JSON object as output like following:
     {
       "degree": "Bachelor of Engineering",
       "university": "Pune Institute of Computer Technology(PICT), Savitribai Phule Pune University, India",
-      "from": "Jul 2015",
+      "from_date": "Jul 2015",
       "to": "Jun 2019",
       "grade": "8.53/10",
       "coursework": [
@@ -54,6 +45,6 @@ Provide JSON object as output like following:
         "Computer Graphics and Multimedia"
       ]
     },
-    {}
+    ...
   ]
 }

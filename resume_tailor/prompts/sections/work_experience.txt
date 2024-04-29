@@ -6,19 +6,19 @@ Step to follow:
 3. Optimize JSON section for clarity and relevance to the job description.
 
 Instructions:
-1. Focus: Craft three highly relevant work experiences aligned with the job description.
-2. Content:
-  2.1. Bullet points: 3 per experience, closely mirroring job requirements.
-  2.2. Impact: Quantify each bullet point for measurable results.
-  2.3. Storytelling: Utilize STAR methodology (Situation, Task, Action, Result) implicitly within each bullet point.
-  2.4. Action Verbs: Showcase soft skills with strong, active verbs.
-  2.5. Honesty: Prioritize truthfulness and objective language.
-  2.6. Structure: Each bullet point follows "Did X by doing Y, achieved Z" format.
-  2.7. Specificity: Prioritize relevance to the specific job over general achievements.
-3. Style:
-  3.1. Clarity: Clear expression trumps impressiveness.
-  3.2. Voice: Use active voice whenever possible.
-  3.3. Proofreading: Ensure impeccable spelling and grammar.
+1. Content:
+  1.1. Bullet points: 2 to 4 points per experience, closely mirroring job requirements.
+  1.2. Impact: Quantify each bullet point for measurable results.
+  1.3. Storytelling: Utilize STAR methodology (Situation, Task, Action, Result) implicitly within each bullet point.
+  1.4. Action Verbs: Showcase soft skills with strong, active verbs.
+  1.5. Honesty: Prioritize truthfulness and objective language.
+  1.6. Structure: Each bullet point follows "Did X by doing Y, achieved Z" format.
+  1.7. Specificity: Prioritize relevance to the specific job over general achievements.
+2. Style:
+  2.1. Clarity: Clear expression trumps impressiveness.
+  2.2. Voice: Use active voice whenever possible.
+  2.3. Proofreading: Ensure impeccable spelling and grammar.
+3. Ensure that each experience is optimized and outputted.
 
 Consider following Work Details delimited by <WORK></WORK> tag.
 <WORK>
@@ -37,7 +37,7 @@ Provide JSON object as output like following:
     {
       "role": "Senior Machine Learning Engineer",
       "company": "Tiger Analytics, Bangalore, India",
-      "from": "Jun 2022",
+      "from_date": "Jun 2022",
       "to": "Jul 2023",
       "description": [
         "Spearheaded development of Data & CI/CD pipelines, Interactive Dashboards, Constraint-based ML Models, Web App, and Comprehensive Documentation for MSP Value Optimization in Petcare sector with a team of 8 analysts. (Team Leadership)",
@@ -48,7 +48,7 @@ Provide JSON object as output like following:
     {
       "role": "Research Intern",
       "company": "IMATMI, Robbinsville, New Jersey (Remote)",
-      "from": "Mar 2019",
+      "from_date": "Mar 2019",
       "to": "Aug 2019",
       "description": [
         "Conducted research and developed a range of ML and statistical models to design analytical tools and streamline HR processes, optimizing talent management systems for increased efficiency.",
@@ -56,6 +56,6 @@ Provide JSON object as output like following:
         "Implemented an automated system to identify 'best-fit employees' for upcoming projects, improving project outcomes and resource allocation for managers."
       ]
     },
-    {}
+    ...
   ]
 }

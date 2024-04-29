@@ -39,7 +39,7 @@ def escape_for_latex(data):
 def json_to_latex_to_pdf(json_resume, dst_path):
     try:
         module_dir = os.path.dirname(__file__)
-        templates_path = os.path.join(os.path.dirname(module_dir), 'templates')
+        templates_path = os.path.join(module_dir, 'templates')
 
         latex_jinja_env = jinja2.Environment(
             block_start_string="\BLOCK{",
@@ -63,6 +63,7 @@ def json_to_latex_to_pdf(json_resume, dst_path):
             os.path.realpath(templates_path),
             os.path.basename(dst_path).replace(".pdf", ".tex")
         )
+        print("Resume latex path: "+resume_tex_path)
         # save latex
         write_file(resume_tex_path, resume_latex)
         # save pdf

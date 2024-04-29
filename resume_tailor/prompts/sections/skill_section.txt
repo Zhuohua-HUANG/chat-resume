@@ -1,14 +1,7 @@
 You are going to write a JSON resume section of "Skills" for an applicant applying for job posts.
-Return everything as a JSON and only and only JSON.
-Step to follow:
-1. Analyze my Skills details to match job requirements.
-2. Create a JSON resume section that highlights strongest matches.
-3. Optimize JSON section for clarity and relevance to the job description.
-
-Instructions:
-- Specificity: Prioritize relevance to the specific job over general achievements.
-- Proofreading: Ensure impeccable spelling and grammar.
-- Honesty: Please refrain from fabricating new skills.
+Return everything as a JSON.
+Please add 5 to 10 skills to my Skills Details that are most aligned with the job description.
+- Specificity: Prioritize relevance to this specific job description over general achievements.
 
 Consider following Skills Details delimited by <SKILL_SECTION></SKILL_SECTION> tag.
 <SKILL_SECTION>
@@ -26,12 +19,12 @@ Provide JSON object as output like following:
     "skill_section": [
         {
           "name": "Programming Languages",
-          "skills": ["Python", "JavaScript", "C#"]
+          "skills": ["Python", "JavaScript", "C#",...]
         },
         {
-          "name": "Cloud and DevOps",
-          "skills": [ "Azure", "AWS"]
+          "name": "Technologies",
+          "skills": [ "Azure", "AWS",...]
         },
-        {}
+        ...
     ]
 }

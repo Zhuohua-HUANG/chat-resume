@@ -13,6 +13,10 @@ from fpdf import FPDF
 from pathlib import Path
 from datetime import datetime
 from langchain_core.output_parsers import JsonOutputParser
+
+from resume_tailor.react_asking_agent import ExperienceType
+from langchain_core.documents.base import Document
+
 OS_SYSTEM = platform.system().lower()
 import streamlit as st
 
@@ -47,7 +51,8 @@ def read_json(file_path: str):
 def job_doc_name(job_details: dict, output_dir: str = "output", type: int = DocumentType.Unknown):
     company_name = clean_string(job_details["company_name"])
     job_title = clean_string(job_details["title"])[:15]
-    doc_name = "_".join([company_name, job_title])
+    random_number=job_details["random_number"]
+    doc_name = "_".join([company_name, job_title, random_number])
     doc_dir = os.path.join(output_dir, company_name)
     os.makedirs(doc_dir, exist_ok=True)
 
@@ -327,3 +332,8 @@ def key_value_chunking(data, prefix=""):
             chunks.append(f"{prefix}: {data}")
     
     return chunks
+
+
+def store_experience(experience: str,experience_type: ExperienceType):
+    document=Document(experience, metadata={"type":experience_type})
+    print(document)

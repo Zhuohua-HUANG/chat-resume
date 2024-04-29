@@ -1,16 +1,18 @@
 import json
 import os
+import random
 
 import numpy as np
 import streamlit as st
 
 from resume_tailor import prompt_path, demo_data_path
-from resume_tailor.utils.data_extraction import extract_plain_text_from_pdf, get_url_content
-from resume_tailor.utils.latex_ops import json_to_latex_to_pdf
-from resume_tailor.utils.llm_models import BIGDL, GPT_4, GPT_3_5, GEMINI_PRO, BigDL_LLM, ChatGPT, Gemini
+from resume_tailor.data_extraction import extract_plain_text_from_pdf, get_url_content
+from resume_tailor.latex_ops import json_to_latex_to_pdf
+from resume_tailor.llm_models import BIGDL, GPT_4, GPT_3_5, GEMINI_PRO, BigDL_LLM, ChatGPT
+from resume_tailor.react_asking_agent import ExperienceType, ReactAskingAgent
 from resume_tailor.utils import get_default_download_folder, get_prompt, measure_execution_time, read_json, \
-    job_doc_name, DocumentType, write_json, write_file, text_to_pdf
-
+    job_doc_name, DocumentType, write_json, write_file, text_to_pdf, store_experience
+from resume_tailor.vector_store import VectorStore
 
 class ResumeBuilder:
     """
@@ -87,18 +89,6 @@ class ResumeBuilder:
                 print(e)
                 return None
 
-        # similar_points = []
-        # for i, doc_embedding in enumerate(document_embeddings):
-        #     similarity_score = openai.Similarity(
-        #         documents=[query_embedding, doc_embedding],
-        #         model="text-davinci-003-001"
-        #     )
-        #     if similarity_score > 0.8:  # Adjust the threshold as per your requirement
-        #         similar_points.append(document[i])
-        # return similar_points
-
-        # qa = RetrievalQA(vector_store=user_embeddings, query_vector_store=job_embeddings, k=3)
-
     def resume_pdf_to_json(self, pdf_path):
         """
         Converts a resume in PDF format to JSON format.
@@ -114,13 +104,16 @@ class ResumeBuilder:
             system_prompt = get_prompt(
                 os.path.join(prompt_path, "extract-resume_BigDL.txt")
             )
+            section_schema="RESUME_DATA_SCHEMA"
         else:
             system_prompt = get_prompt(
                 os.path.join(prompt_path, "extract-resume.txt")
             )
+            section_schema = None
         llm = self.get_llm_instance(system_prompt)
         resume_text = extract_plain_text_from_pdf(pdf_path)
-        resume_json = llm.get_response(resume_text, need_json_output=True)
+
+        resume_json = llm.get_response(resume_text, need_json_output=True, section_schema=section_schema)
         return resume_json
 
     def get_llm_instance(self, system_prompt):
@@ -128,10 +121,11 @@ class ResumeBuilder:
             return BigDL_LLM(system_prompt=system_prompt)
         elif self.provider == GPT_3_5 or self.provider == GPT_4:
             return ChatGPT(gpt_type= self.provider, api_key=self.api_key, system_prompt=system_prompt)
-        elif self.provider == GEMINI_PRO:
-            return Gemini(api_key=self.api_key, system_prompt=system_prompt)
+        # elif self.provider == GEMINI_PRO:
+        #     return Gemini(api_key=self.api_key, system_prompt=system_prompt)
         else:
             raise Exception("Invalid LLM Provider")
+
 
     @measure_execution_time
     def user_data_extraction(self, user_data_path: str = demo_data_path, is_st=False):
@@ -156,8 +150,26 @@ class ResumeBuilder:
             user_data = read_json(user_data_path)
         else:
             raise Exception("unknown user data format")
-
+        write_json(os.path.join(self.downloads_dir, "extracted_resume_data.json"), user_data)
         return user_data
+
+    def user_experience_asking(self, user_data: dict, download_resume_path):
+        llm_instance = self.get_llm_instance("")
+        vstore_faiss=VectorStore(llm_instance.embeddings, download_resume_path)
+        for (section, e_type) in [('work_experience', ExperienceType.work), ('projects', ExperienceType.project)]:
+            experiences = user_data[section]
+            react_agent = ReactAskingAgent(llm_instance.get_llm(), e_type)
+            for experience in experiences:
+                document = react_agent.get_experience_document(experience, e_type)
+                vstore_faiss.store_experience(document,e_type)
+        vstore_faiss.construct_and_save_local()
+        return vstore_faiss
+
+    def get_exist_vectorstore(self, download_resume_path):
+        llm_instance = self.get_llm_instance("")
+        vstore_faiss = VectorStore(llm_instance.embeddings, download_resume_path)
+        vstore_faiss.load_local()
+        return vstore_faiss
 
     @measure_execution_time
     def job_details_extraction(self, url: str=None, job_site_content: str=None, is_st=False):
@@ -188,9 +200,13 @@ class ResumeBuilder:
                     raise Exception("Unable to web scrape the job description.")
 
             llm = self.get_llm_instance(system_prompt)
-            job_details = llm.get_response(job_site_content, need_json_output=True)
+            section_schema=None
+            if self.provider == BIGDL:
+                section_schema="Job_Detail_SCHEMA"
+            job_details = llm.get_response(job_site_content, need_json_output=True,section_schema=section_schema)
             if url is not None and url.strip() != "":
                 job_details["url"] = url
+            job_details["random_number"]= str(random.randint(1, 999999))
             jd_path = job_doc_name(job_details, self.downloads_dir, DocumentType.JobDescription)
 
             write_json(jd_path, job_details)
@@ -259,7 +275,7 @@ class ResumeBuilder:
 
 
     @measure_execution_time
-    def resume_builder(self, job_details: dict, user_data: dict, is_st=False):
+    def resume_builder(self, job_details: dict, user_data: dict, vstore_faiss: VectorStore, is_st=False):
         """
         Builds a resume based on the provided job details and user data.
 
@@ -281,22 +297,43 @@ class ResumeBuilder:
             system_prompt = get_prompt(os.path.join(prompt_path, "persona-job-llm.txt"))
 
             # Personal Information Section
-            if is_st: st.toast("Processing Resume's Personal Info Section...")
+            if is_st:
+                st.toast("Processing Resume's Personal Info Section...")
             resume_details_dict["personal"] = {
                 "name": user_data["name"],
                 "phone": user_data["phone"],
                 "email": user_data["email"],
-                "github": user_data["media"]["github"],
-                "linkedin": user_data["media"]["linkedin"]
-                }
+                "github": user_data["github"],
+                "linkedin": user_data["linkedin"]
+            }
+
             st.markdown("**Personal Info Section**")
             st.write(resume_details_dict)
 
+            string_job_details = json.dumps(job_details)
+
+            experience_list = vstore_faiss.get_top_k_experiences(5, string_job_details)
+            if len(experience_list) != 5:
+                raise Exception("Wrong number of experiences:"+str(len(experience_list)))
+
+            work_experience_list = []
+            project_list = []
+            for experience in experience_list:
+                type = experience.metadata["type"]
+                content = experience.page_content
+                if type == ExperienceType.work:
+                    work_experience_list.append(content)
+                elif type == ExperienceType.project:
+                    project_list.append(content)
+
+            user_data['work_experience'] = work_experience_list
+            user_data['projects'] = project_list
+
             # Other Sections
-            # TODO: optimize the certifications and achievements prompts and add some conditions to eliminate the illusion
-            for section in ['work_experience', 'education', 'skill_section', 'projects', 'certifications', 'achievements']:
+            for section in ['education', 'skill_section', 'work_experience', 'projects', 'certifications', 'achievements']:
                 section_log = f"Processing Resume's {section.upper()} Section..."
-                if is_st: st.toast(section_log)
+                if is_st:
+                    st.toast(section_log)
                 query = get_prompt(os.path.join(prompt_path, "sections", f"{section}.txt"))
                 query = (
                     query.replace(
@@ -304,13 +341,15 @@ class ResumeBuilder:
                         json.dumps(user_data[section])
                         ).replace(
                         "<JOB_DESCRIPTION>",
-                        json.dumps(job_details)
+                        string_job_details
                         )
                 )
 
                 llm = self.get_llm_instance(system_prompt)
-                response = llm.get_response(query, expecting_longer_output=True, need_json_output=True)
-
+                section_schema=None
+                if self.provider == BIGDL:
+                    section_schema = section
+                response = llm.get_response(query, expecting_longer_output=True, need_json_output=True, section_schema=section_schema)
                 if response is not None and isinstance(response, dict):
                     if section in response:
                         if response[section]:
@@ -328,10 +367,10 @@ class ResumeBuilder:
 
             resume_details_dict['keywords'] = job_details['keywords']
 
-            resume_josn_path = job_doc_name(job_details, self.downloads_dir, DocumentType.Resume)
+            resume_json_path = job_doc_name(job_details, self.downloads_dir, DocumentType.Resume)
 
-            write_json(resume_josn_path, resume_details_dict)
-            resume_pdf_path = resume_josn_path.replace(".json", ".pdf")
+            write_json(resume_json_path, resume_details_dict)
+            resume_pdf_path = resume_json_path.replace(".json", ".pdf")
             # st.write(f"resume_path: {resume_path}")
             if is_st:
                 st.write("Converting JSON resume to latex and to pdf")
@@ -344,60 +383,3 @@ class ResumeBuilder:
             if is_st:
                 st.write("Error: \n\n",e)
             return resume_pdf_path, resume_details_dict
-
-    def resume_cv_pipeline(self, job_url: str, user_data_path: str = demo_data_path):
-        """Run the Auto Apply Pipeline.
-
-        Args:
-            job_url (str): The URL of the job to apply for.
-            user_data_path (str, optional): The path to the user profile data file.
-                Defaults to os.path.join(module_dir, "master_data','user_profile.json").
-
-        Returns:
-            None: The function prints the progress and results to the console.
-        """
-        try:
-            if user_data_path is None or user_data_path.strip() == "":
-                user_data_path = demo_data_path
-
-            print("Starting Auto Resume and CV Pipeline")
-            if job_url is None and len(job_url.strip()) == "":
-                print("Job URL is required.")
-                return
-
-            # Extract user data
-            user_data = self.user_data_extraction(user_data_path)
-
-            # Extract job details
-            job_details, jd_path = self.job_details_extraction(url=job_url)
-            # job_details = read_json("/Users/saurabh/Downloads/JobLLM_Resume_CV/Netflix/Netflix_MachineLearning_JD.json")
-
-            # Generate cover letter
-            # cv_details, cv_path = self.cover_letter_generator(job_details, user_data)
-
-            # Build resume
-            resume_path, resume_details = self.resume_builder(job_details, user_data)
-            # resume_details = read_json("/Users/saurabh/Downloads/JobLLM_Resume_CV/Netflix/Netflix_MachineLearning_resume.json")
-
-            # Calculate metrics
-            for metric in ['jaccard_similarity', 'overlap_coefficient', 'cosine_similarity']:
-                print(f"\nCalculating {metric}...")
-
-                if metric == 'vector_embedding_similarity':
-                    llm = self.get_llm_instance('')
-                    user_personlization = globals()[metric](llm, json.dumps(resume_details), json.dumps(user_data))
-                    job_alignment = globals()[metric](llm, json.dumps(resume_details), json.dumps(job_details))
-                    job_match = globals()[metric](llm, json.dumps(user_data), json.dumps(job_details))
-                else:
-                    user_personlization = globals()[metric](json.dumps(resume_details), json.dumps(user_data))
-                    job_alignment = globals()[metric](json.dumps(resume_details), json.dumps(job_details))
-                    job_match = globals()[metric](json.dumps(user_data), json.dumps(job_details))
-
-                print("User Personlization Score(resume,master_data): ", user_personlization)
-                print("Job Alignment Score(resume,JD): ", job_alignment)
-                print("Job Match Score(master_data,JD): ", job_match)
-
-            print("\nDone!!!")
-        except Exception as e:
-            print(e)
-            return None
