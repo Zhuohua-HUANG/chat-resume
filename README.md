@@ -13,17 +13,17 @@
  - LLM API key: [OpenAI](https://openai.com/pricing) 
 
 ### 2.4. Setup & Run Code - Use as Project
- 1. Create and activate python environment to avoid any package dependency conflict.
-    ```bash
-    conda create -n job-llm python=3.11.6
-    conda activate job-llm
-    ```
+1. Create and activate python environment to avoid any package dependency conflict.
+   ```bash
+   conda create -n job-llm python=3.11.6
+   conda activate job-llm
+   ```
 
- 2. Install all required packages.
-    - Try pip install
-      ```bash
-      pip install -r requirements.txt
-      ```
+2. Install all required packages.
+   - Try pip install
+     ```bash
+     pip install -r requirements.txt
+     ```
 
 3. We also need to install following packages to conversion of latex to pdf
     - For windows
@@ -45,17 +45,8 @@
     python download_Llama2_and_BigDL_optimize.py
     cd ../
     ```
-
-5. Run the resume_tailor tool
-```bash
->>> python main.py /
-    --url "JOB_POSTING_URL" /
-    --master_data="JSON_USER_MASTER_DATA" /
-    --api_key="YOUR_LLM_PROVIDER_API_KEY" / # put api_key considering provider
-    --downloads_dir="DOWNLOAD_LOCATION_FOR_RESUME_CV" /
-    --provider="BigDL-Llama-2-7b-chat" # BigDL-Llama-2-7b-chat, gpt-3.5-turbo-0125, gpt-4-1106-preview, gemini-pro
-```
-6. Run app
-```bash
-streamlit run web_app.py
-```
+   
+5. Run app
+    ```bash
+    streamlit run web_app.py
+    ```
