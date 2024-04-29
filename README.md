@@ -1,6 +1,6 @@
-# Resume Tailor Using Large Language Model 
+# Chat Resume
 
-[![Click here to see image of "Auto Job Aligned Personalized Resume Generation Pipeline"](./resources/chat_resume_structure.png)](./resources/chat_resume_structure.png)
+[![](./resources/structure.png)](./resources/structure.png)
 
 
 ## 2. Setup, Installation and Usage

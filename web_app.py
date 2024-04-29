@@ -6,13 +6,13 @@ import time
 
 import streamlit as st
 
-from resume_tailor.resume_builder import ResumeBuilder
-from resume_tailor.utils import display_pdf, download_pdf, read_file, read_json
-from resume_tailor.metrics import jaccard_similarity, overlap_coefficient, cosine_similarity
-from resume_tailor.llm_models import BIGDL, GPT_3_5, GPT_4, GEMINI_PRO
+from chat_resume.resume_builder import ResumeBuilder
+from chat_resume.utils import display_pdf, download_pdf, read_file, read_json
+from chat_resume.metrics import jaccard_similarity, overlap_coefficient, cosine_similarity
+from chat_resume.llm_models import BIGDL, GPT_3_5, GPT_4, GEMINI_PRO
 
 st.set_page_config(
-    page_title="Resume Tailor",
+    page_title="Chat Resume",
     page_icon="📑",
     menu_items={
         # 'Get help': 'https://www.youtube.com',
@@ -23,8 +23,8 @@ st.set_page_config(
 
 try:
     # st.markdown("<h1 style='text-align: center; color: grey;'>Get :green[Job Aligned] :orange[Killer] Resume :sunglasses:</h1>", unsafe_allow_html=True)
-    st.header("Your :green[Personalized] :orange[Resume Assistant]", divider='rainbow')
-
+    st.header(":green[Chat] :orange[Resume]", divider='rainbow')
+    st.subheader("Your Personalized Resume Assistant")
     col_text, col_url,_,_ = st.columns(4)
     with col_text:
         st.write("Job Description Text")
@@ -38,7 +38,7 @@ try:
     else:
         text = st.text_area("Paste job description text:", max_chars=5500, height=200, placeholder="Paste job description text here...", label_visibility="collapsed")
 
-    is_use_existing_userdata_button = st.toggle('Use existing user data', False)
+    is_use_existing_userdata_button = st.toggle('Use Existing Data', False)
     if not is_use_existing_userdata_button:
         file = st.file_uploader("Upload your resume or any work-related data(PDF, JSON).", type=["json", "pdf"])
 
@@ -106,6 +106,7 @@ try:
             else:
                 user_data = read_json(os.path.join(download_resume_path, "extracted_resume_data.json"))
                 vstore = resume_llm.get_exist_vectorstore(download_resume_path)
+
 
 
             if user_data is None or vstore is None:
