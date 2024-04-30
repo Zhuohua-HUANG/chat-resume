@@ -5,7 +5,7 @@ from transformers import LlamaTokenizer
 # LLM download
 snapshot_download(repo_id='meta-llama/Llama-2-7b-chat-hf',
                   local_dir="./checkpoints/Llama-2-7'"
-                            "'-chat-hf", token="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")
+                            "'-chat-hf", token="YOU-NEED-TO-ADD-HF-TOKEN")
 
 # Embeddings
 snapshot_download(repo_id='sentence-transformers/all-MiniLM-L12-v2',
