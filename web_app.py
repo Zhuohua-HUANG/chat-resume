@@ -6,13 +6,13 @@ import time
 
 import streamlit as st
 
-from chat_resume.resume_builder import ResumeBuilder
-from chat_resume.utils import display_pdf, download_pdf, read_file, read_json
-from chat_resume.metrics import jaccard_similarity, overlap_coefficient, cosine_similarity
-from chat_resume.llm_models import BIGDL, GPT_3_5, GPT_4, GEMINI_PRO
+from resume_tailor.resume_builder import ResumeBuilder
+from resume_tailor.utils import display_pdf, download_pdf, read_file, read_json
+from resume_tailor.metrics import jaccard_similarity, overlap_coefficient, cosine_similarity
+from resume_tailor.llm_models import BIGDL, GPT_3_5, GPT_4, GEMINI_PRO
 
 st.set_page_config(
-    page_title="Chat Resume",
+    page_title="Resume Tailor",
     page_icon="📑",
     menu_items={
         # 'Get help': 'https://www.youtube.com',
@@ -23,7 +23,7 @@ st.set_page_config(
 
 try:
     # st.markdown("<h1 style='text-align: center; color: grey;'>Get :green[Job Aligned] :orange[Killer] Resume :sunglasses:</h1>", unsafe_allow_html=True)
-    st.header(":green[Chat] :orange[Resume]", divider='rainbow')
+    st.header(":green[Resume] :orange[Tailor]", divider='rainbow')
     st.subheader("Your Personalized Resume Assistant")
     col_text, col_url,_,_ = st.columns(4)
     with col_text:

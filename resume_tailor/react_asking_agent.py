@@ -5,7 +5,7 @@ from langchain import hub
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain_core.language_models.base import BaseLanguageModel
 import streamlit as st
-from chat_resume.tools.syn_asking import UserAskingTool
+from resume_tailor.tools.syn_asking import UserAskingTool
 
 class ExperienceType(enum.IntEnum):
     project = 1

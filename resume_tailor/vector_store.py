@@ -1,6 +1,6 @@
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents.base import Document
-from chat_resume.react_asking_agent import ExperienceType
+from resume_tailor.react_asking_agent import ExperienceType
 class VectorStore:
     def __init__(self, embeddings, download_resume_path):
         self.vectorstore = None

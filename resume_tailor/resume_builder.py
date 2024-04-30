@@ -5,14 +5,14 @@ import random
 import numpy as np
 import streamlit as st
 
-from chat_resume import prompt_path, demo_data_path
-from chat_resume.data_extraction import extract_plain_text_from_pdf, get_url_content
-from chat_resume.latex_ops import json_to_latex_to_pdf
-from chat_resume.llm_models import BIGDL, GPT_4, GPT_3_5, GEMINI_PRO, BigDL_LLM, ChatGPT
-from chat_resume.react_asking_agent import ExperienceType, ReactAskingAgent
-from chat_resume.utils import get_default_download_folder, get_prompt, measure_execution_time, read_json, \
+from resume_tailor import prompt_path, demo_data_path
+from resume_tailor.data_extraction import extract_plain_text_from_pdf, get_url_content
+from resume_tailor.latex_ops import json_to_latex_to_pdf
+from resume_tailor.llm_models import BIGDL, GPT_4, GPT_3_5, GEMINI_PRO, BigDL_LLM, ChatGPT
+from resume_tailor.react_asking_agent import ExperienceType, ReactAskingAgent
+from resume_tailor.utils import get_default_download_folder, get_prompt, measure_execution_time, read_json, \
     job_doc_name, DocumentType, write_json, write_file, text_to_pdf, store_experience
-from chat_resume.vector_store import VectorStore
+from resume_tailor.vector_store import VectorStore
 
 class ResumeBuilder:
     """
