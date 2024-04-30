@@ -36,12 +36,50 @@
 
 \begin{document}
 
+%==== EDUCATION SECTION ====%
+\BLOCK{ if education }
+\begin{rSection}{Education}
+    \BLOCK{ for school in education }
+            \BLOCK{ if school.university }
+                \textbf{\VAR{school.university}} \hfill {\VAR{school.from_date} - \VAR{school.to}} \\
+                \BLOCK{ if school.degree }
+                    {\VAR{school.degree}}
+                \BLOCK{ endif }
+                \BLOCK{ if school.grade }
+                    \hfill {(GPA: \VAR{school.grade})}
+                \BLOCK{ endif }
+                \BLOCK{ if school.coursework }
+                    \\
+                    \textbf{\textit{Relevant Courses:}} \textit{\VAR{', '.join(school.coursework)}}
+                \BLOCK{ endif }
+            \BLOCK{ endif }
+
+    \BLOCK{ endfor }
+\end{rSection}
+\BLOCK{ endif }
+
+%==== TECHNICAL STRENGTHS SECTION ====%
+\BLOCK{ if skill_section }
+    \begin{rSection}{Technical Skills}
+        \begin{tabular}{ @{} l @{\hspace{1ex}} l }
+            \BLOCK{ for section in skill_section }
+                    \textbf{\VAR{section.name}}: \VAR{', '.join(section.skills)}\\
+            \BLOCK{ endfor }
+            \BLOCK{ if certifications }\textbf{Certifications:}
+                    \BLOCK{ for certification in certifications }
+                        \href{\VAR{certification.link}}{\textbf{\VAR{certification.name}}},
+                    \BLOCK{ endfor }
+            \BLOCK{ endif }
+        \end{tabular}
+    \end{rSection}
+\BLOCK{ endif }
+
 %===== WORK EXPERIENCE SECTION =====%
 \BLOCK{ if work_experience }
     \begin{rSection}{Work Experience}
         \BLOCK{ for exp in work_experience }
             \begin{rSubsection}
-                {\VAR{exp.role}}{\BLOCK{ if exp.from }\VAR{exp.from} -\BLOCK{ endif } \BLOCK{ if exp.from }\VAR{exp.to}\BLOCK{ endif }}
+                {\VAR{exp.role}}{\BLOCK{ if exp.from_date }\VAR{exp.from_date} -\BLOCK{ endif } \BLOCK{ if exp.from_date }\VAR{exp.to}\BLOCK{ endif }}
                 \BLOCK{ if exp.link}
                     {\normalfont{\textit{\href{\VAR{exp.link}}{\VAR{exp.company}}}}}
                 \BLOCK{else}
@@ -56,26 +94,6 @@
     \end{rSection}
 \BLOCK{ endif }
 
-%==== EDUCATION SECTION ====%
-\BLOCK{ if education }
-\begin{rSection}{Education}
-    \BLOCK{ for school in education }
-        \BLOCK{ if school.university }
-            \textbf{\VAR{school.university}} \hfill {\VAR{school.from} - \VAR{school.to}} \\
-            \BLOCK{ if school.degree }
-                {\VAR{school.degree}}
-            \BLOCK{ endif }
-            \BLOCK{ if school.grade }
-                \hfill {(GPA: \VAR{school.grade})}
-            \BLOCK{ endif } 
-            \BLOCK{ if school.coursework }
-                \textbf{\textit{Relevant Courses:}} \textit{\VAR{', '.join(school.coursework)}}
-            \BLOCK{ endif } 
-        \BLOCK{ endif } 
-    \BLOCK{ endfor }
-\end{rSection}
-\BLOCK{ endif }
-
 % ==== PROJECTS SECTION =====%
 \BLOCK{ if projects }
     \begin{rSection}{Projects}
@@ -86,7 +104,7 @@
                 \BLOCK{else}
                     {\VAR{project.name}}
                 \BLOCK{ endif }
-                {\normalfont{\VAR{project.from} - \VAR{project.to}}}{}{}
+                {\normalfont{\VAR{project.from_date} - \VAR{project.to}}}{}{}
                 \BLOCK{ for point in project.description}
                     \item \VAR{point}
                 \BLOCK{ endfor }
@@ -95,23 +113,7 @@
     \end{rSection}
 \BLOCK{ endif }
 
-%==== TECHNICAL STRENGTHS SECTION ====%
-\BLOCK{ if skill_section }
-    \begin{rSection}{Technical Skills}
-        \begin{tabular}{ @{} l @{\hspace{1ex}} l }
-            \BLOCK{ for section in skill_section }
-                    \textbf{\VAR{section.name}}: \VAR{', '.join(section.skills)}\\
-            \BLOCK{ endfor }
-            \BLOCK{ if certifications }\textbf{Certifications:} 
-                    \BLOCK{ for certification in certifications }
-                        \href{\VAR{certification.link}}{\textbf{\VAR{certification.name}}},\\
-                    \BLOCK{ endfor }
-            \BLOCK{ endif } 
-        \end{tabular}
-    \end{rSection}
-\BLOCK{ endif } 
-
-% ACHIEVEMENTS SECTION
+% ACHIEVEMENTS SECTION%
 \BLOCK{ if achievements }
     \begin{rSection}{Achievements}
         \begin{rSubsection}{}{}{}

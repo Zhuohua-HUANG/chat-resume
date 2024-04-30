@@ -1,0 +1,50 @@
+You are going to write a JSON resume section of "Education" for an applicant applying for job posts.
+Return everything as a JSON and only and only JSON.
+
+According to my Education Details, modify the field of "coursework" to match the job description.
+Each field of "coursework" should include 5 to 6 courses that are relevant to the job description.
+
+Consider following Education Details delimited by <Education></Education> tag.
+<Education>
+<SECTION_DATA>
+</Education>
+
+Consider following Job description delimited by <JOB_DETAIL></JOB_DETAIL> tag.
+<JOB_DETAIL>
+<JOB_DESCRIPTION>
+</JOB_DETAIL>
+
+Desired Output:
+Provide JSON object as output like following:
+{
+  "education": [
+    {
+      "degree": "Masters of Science - Computer Science (Thesis)",
+      "university": "Arizona State University, Tempe, USA",
+      "from_date": "Aug 2023",
+      "to": "May 2025",
+      "grade": "3.8/4",
+      "coursework": [
+        "Operational Deep Learning",
+        "Software verification, Validation and Testing",
+        "Social Media Mining"
+      ]
+    },
+    {
+      "degree": "Bachelor of Engineering",
+      "university": "Pune Institute of Computer Technology(PICT), Savitribai Phule Pune University, India",
+      "from_date": "Jul 2015",
+      "to": "Jun 2019",
+      "grade": "8.53/10",
+      "coursework": [
+        "Data Structure and Algorithm",
+        "Object Oriented Programming",
+        "Operating System",
+        "Computer Networks",
+        "Databases Management System",
+        "Computer Graphics and Multimedia"
+      ]
+    },
+    ...
+  ]
+}

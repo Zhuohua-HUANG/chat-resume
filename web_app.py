@@ -1,33 +1,36 @@
+import multiprocessing
 import os
 import json
 import shutil
+import time
+
 import streamlit as st
 
-
-from zlm import AutoApplyModel
-from zlm.utils.utils import display_pdf, download_pdf, read_file, read_json
-from zlm.utils.metrics import jaccard_similarity, overlap_coefficient, cosine_similarity
+from chat_resume.resume_builder import ResumeBuilder
+from chat_resume.utils import display_pdf, download_pdf, read_file, read_json
+from chat_resume.metrics import jaccard_similarity, overlap_coefficient, cosine_similarity
+from chat_resume.llm_models import BIGDL, GPT_3_5, GPT_4, GEMINI_PRO
 
 st.set_page_config(
-    page_title="Resume Generator",
+    page_title="Chat Resume",
     page_icon="📑",
     menu_items={
-        'Get help': 'https://www.youtube.com/watch?v=Agl7ugyu1N4',
-        'About': 'https://github.com/Ztrimus/job-llm',
-        'Report a bug': "https://github.com/Ztrimus/job-llm/issues",
+        # 'Get help': 'https://www.youtube.com',
+        'About': 'https://github.com/Zhuohua-HUANG/resume-tailor-llm?tab=readme-ov-file',
+        'Report a bug': "https://github.com/Zhuohua-HUANG/resume-tailor-llm/issues",
     }
 )
 
 try:
     # st.markdown("<h1 style='text-align: center; color: grey;'>Get :green[Job Aligned] :orange[Killer] Resume :sunglasses:</h1>", unsafe_allow_html=True)
-    st.header("Get :green[Job Aligned] :orange[Personalized] Resume", divider='rainbow')
-    # st.subheader("Skip the writing, land the interview")
-
+    st.header(":green[Chat] :orange[Resume]", divider='rainbow')
+    st.subheader("Your Personalized Resume Assistant")
     col_text, col_url,_,_ = st.columns(4)
     with col_text:
         st.write("Job Description Text")
     with col_url:
-        is_url_button = st.toggle('Job URL', False)
+        # is_url_button = st.toggle('Job URL', False)
+        is_url_button = False
 
     url, text = "", ""
     if is_url_button:
@@ -35,13 +38,17 @@ try:
     else:
         text = st.text_area("Paste job description text:", max_chars=5500, height=200, placeholder="Paste job description text here...", label_visibility="collapsed")
 
-    file = st.file_uploader("Upload your resume or any work-related data(PDF, JSON). [Recommended templates](https://github.com/Ztrimus/job-llm/tree/main/zlm/demo_data)", type=["json", "pdf"])
+    is_use_existing_userdata_button = st.toggle('Use Existing Data', False)
+    if not is_use_existing_userdata_button:
+        file = st.file_uploader("Upload your resume or any work-related data(PDF, JSON).", type=["json", "pdf"])
 
     col_1, col_2 = st.columns(2)
     with col_1:
-        provider = st.selectbox("Select LLM provider([OpenAI](https://openai.com/blog/openai-api), [Gemini Pro](https://ai.google.dev/)):", ["gemini-pro", "gpt-3"])
-    with col_2:
-        api_key = st.text_input("Enter API key:", type="password")
+        provider = st.selectbox("Select LLM provider([OpenAI](https://openai.com/blog/openai-api), [BigDL](https://github.com/intel-analytics/BigDL)):", [BIGDL, GPT_4, GPT_3_5])
+    api_key = ""
+    if provider in [GPT_4,GPT_3_5, GEMINI_PRO]:
+        with col_2:
+            api_key = st.text_input("Enter API key:", type="password")
     st.markdown("<sub><sup>💡 GPT-4 is recommended for better results.</sup></sub>", unsafe_allow_html=True)
 
     # Buttons side-by-side with styling
@@ -59,7 +66,8 @@ try:
             get_cover_letter_button = True
 
     if get_resume_button or get_cover_letter_button:
-        if file is None:
+        # check valid input
+        if not is_use_existing_userdata_button and file is None:
             st.toast(":red[Upload user's resume or work related data to get started]", icon="⚠️")
             st.stop()
         
@@ -67,34 +75,43 @@ try:
             st.toast(":red[Please enter a job posting URL or paste the job description to get started]", icon="⚠️") 
             st.stop()
         
-        if api_key == "":
+        if provider in [GPT_4,GPT_3_5, GEMINI_PRO] and api_key == "":
             st.toast(":red[Please enter the API key to get started]", icon="⚠️")
             st.stop()
-        
-        if file is not None and (url != "" or text != ""):
+        # run the workflow if inputs are valid
+        if (is_use_existing_userdata_button or file is not None) and (url != "" or text != ""):
             download_resume_path = os.path.join(os.path.dirname(__file__), "output")
 
             # st.write(f"download_resume_path: {download_resume_path}")
 
-            llm_mapping = {'gpt-3':'openai', 'gemini-pro':'gemini'}
+            resume_llm = ResumeBuilder(api_key=api_key, provider=provider, downloads_dir=download_resume_path)
 
-            resume_llm = AutoApplyModel(api_key=api_key, provider=llm_mapping[provider], downloads_dir=download_resume_path)
-            
-            # Save the uploaded file
-            os.makedirs("uploads", exist_ok=True)
-            file_path = os.path.abspath(os.path.join("uploads", file.name))
-            with open(file_path, "wb") as f:
-                f.write(file.getbuffer())
+            vstore = None
+            if not is_use_existing_userdata_button:
+                # Save the uploaded file
+                os.makedirs("uploads", exist_ok=True)
+                file_path = os.path.abspath(os.path.join("uploads", file.name))
+                with open(file_path, "wb") as f:
+                    f.write(file.getbuffer())
         
-            # Extract user data
-            with st.status("Extracting user data..."):
-                user_data = resume_llm.user_data_extraction(file_path, is_st=True)
-                st.write(user_data)
+                # Extract user data
+                with st.status("Extracting user data..."):
+                    user_data = resume_llm.user_data_extraction(file_path, is_st=True)
+                    st.write(user_data)
 
-            shutil.rmtree(os.path.dirname(file_path))
+                shutil.rmtree(os.path.dirname(file_path))
 
-            if user_data is None:
-                st.error("User data not able process. Please upload a valid file")
+                with st.status("Chatting about your experience..."):
+                    vstore = resume_llm.user_experience_asking(user_data, download_resume_path)
+            else:
+                user_data = read_json(os.path.join(download_resume_path, "extracted_resume_data.json"))
+                vstore = resume_llm.get_exist_vectorstore(download_resume_path)
+
+
+
+            if user_data is None or vstore is None:
+                st.error("User data can not be processed. "
+                         "Please select \"Use existing user data\" button and upload a valid file")
                 st.markdown("<h3 style='text-align: center;'>Please try again</h3>", unsafe_allow_html=True)
                 st.stop()
 
@@ -114,7 +131,7 @@ try:
             # Build Resume
             if get_resume_button:
                 with st.status("Building resume..."):
-                    resume_path, resume_details = resume_llm.resume_builder(job_details, user_data, is_st=True)
+                    resume_path, resume_details = resume_llm.resume_builder(job_details, user_data, vstore, is_st=True)
                     # st.write("Outer resume_path: ", resume_path)
                     # st.write("Outer resume_details is None: ", resume_details is None)
                 resume_col_1, resume_col_2 = st.columns([0.7, 0.3])
@@ -130,15 +147,17 @@ try:
                                         key="download_pdf_button",
                                         mime="application/pdf",
                                         use_container_width=True)
-                
+
                 display_pdf(resume_path, type="image")
                 st.toast("Resume generated successfully!", icon="✅")
+
                 # Calculate metrics
                 st.subheader("Resume Metrics")
                 for metric in ['overlap_coefficient', 'cosine_similarity']:
                     user_personlization = globals()[metric](json.dumps(resume_details), json.dumps(user_data))
                     job_alignment = globals()[metric](json.dumps(resume_details), json.dumps(job_details))
                     job_match = globals()[metric](json.dumps(user_data), json.dumps(job_details))
+                    job_improvement = job_alignment-job_match
 
                     if metric == "overlap_coefficient":
                         title = "Overlap Coefficient"
@@ -149,9 +168,10 @@ try:
 
                     st.caption(f"## **:rainbow[{title}]**", help=help_text)
                     col_m_1, col_m_2, col_m_3 = st.columns(3)
-                    col_m_1.metric(label=":green[User Personlization Score]", value=f"{user_personlization:.3f}", delta="[resume,master_data]", delta_color="off")
-                    col_m_2.metric(label=":blue[Job Alignment Score]", value=f"{job_alignment:.3f}", delta="[resume,JD]", delta_color="off")
-                    col_m_3.metric(label=":violet[Job Match Score]", value=f"{job_match:.3f}", delta="[master_data,JD]", delta_color="off")
+                    col_m_1.metric(label=":orange[ImprovedResume vs JobDetail]", value=f"{job_alignment:.3f}",
+                                   delta=f"{job_improvement:.6f}", delta_color="normal")
+                    col_m_2.metric(label=":blue[OriginalResume vs JobDetail]", value=f"{job_match:.3f}")
+                    col_m_3.metric(label=":green[ImprovedResume vs OriginalResume]", value=f"{user_personlization:.3f}")
                 st.markdown("---")
 
             # Build Cover Letter
@@ -168,16 +188,16 @@ try:
                                     file_name=os.path.basename(cv_path),
                                     # on_click=download_pdf(cv_path),
                                     key="download_cv_button",
-                                    mime="application/pdf", 
+                                    mime="application/pdf",
                                     use_container_width=True)
                 st.markdown(cv_details, unsafe_allow_html=True)
                 st.markdown("---")
                 st.toast("cover letter generated successfully!", icon="✅")
-            
+
             st.toast(f"Done", icon="👍🏻")
             st.success(f"Done", icon="👍🏻")
             st.balloons()
-            
+
             refresh = st.button("Refresh")
 
             if refresh:
@@ -188,5 +208,3 @@ except Exception as e:
     st.error(f"An error occurred: {e}")
     st.markdown("<h3 style='text-align: center;'>Please try again!</h3>", unsafe_allow_html=True)
     st.stop()
-
-st.link_button("Report Feedback, Issues, or Contribute!", "https://github.com/Ztrimus/job-llm/issues", use_container_width=True)

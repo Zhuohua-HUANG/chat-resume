@@ -1,5 +1,5 @@
 You are going to write a JSON resume section of "Achievements" for an applicant applying for job posts.
-
+Return everything as a JSON and only and only JSON.
 Step to follow:
 1. Analyze my achievements details to match job requirements.
 2. Create a JSON resume section that highlights strongest matches
@@ -7,7 +7,7 @@ Step to follow:
 
 Instructions:
 1. Focus: Craft relevant achievements aligned with the job description.
-2. Honesty: Prioritize truthfulness and objective language.
+2. Honesty: Prioritize truthfulness and objective language. Please refrain from fabricating new achievements.
 3. Specificity: Prioritize relevance to the specific job over general achievements.
 4. Style:
   4.1. Voice: Use active voice whenever possible.
@@ -24,12 +24,11 @@ Consider following Job description delimited by <JOB_DETAIL></JOB_DETAIL> tag.
 </JOB_DETAIL>
 
 Desired Output:
-Provide JSON object as output like following:
+Provide only JSON object as output like following:
 {
   "achievements": [
     "Won E-yantra Robotics Competition 2018 - IITB.",
     "1st prize in “Prompt Engineering Hackathon 2023 for Humanities”",
-    "Received the 'Extra Miller - 2021' award at Winjit Technologies for outstanding performance. ",
-    and so on ...
+    ...
   ]
 }
