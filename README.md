@@ -37,8 +37,10 @@
         brew install basictex
         sudo tlmgr install enumitem fontawesome
         ```
-4. download Llama and enable BigDL optimize
+4. Download Llama and enable BigDL optimize
+   
    At first, you should update the Hugging Face Token in download_Llama2_and_BigDL_optimize.py.
+   
    Then, please run these bash command:
     ```bash
     cd ./resume_tailor 
