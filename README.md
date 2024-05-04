@@ -13,8 +13,8 @@
 ## 2. Setup & Run Code - Use as Project
 1. Create and activate python environment to avoid any package dependency conflict.
    ```bash
-   conda create -n job-llm python=3.9.18
-   conda activate job-llm
+   conda create -n resume-tailor python=3.9.18
+   conda activate resume-tailor
    ```
 
 2. Install all required packages.
