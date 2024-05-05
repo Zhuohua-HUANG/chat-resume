@@ -1,6 +1,7 @@
 __pycache__
 .env
 .vscode
+.idea
 output
 resume_tailor/templates/*_resume.tex
 resume_tailor/templates/*_resume.pdf
