@@ -14,7 +14,7 @@ from pathlib import Path
 from datetime import datetime
 from langchain_core.output_parsers import JsonOutputParser
 
-from resume_tailor.react_asking_agent import ExperienceType
+from chat_resume.react_asking_agent import ExperienceType
 from langchain_core.documents.base import Document
 
 OS_SYSTEM = platform.system().lower()

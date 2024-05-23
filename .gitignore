@@ -3,9 +3,9 @@ __pycache__
 .vscode
 .idea
 output
-resume_tailor/templates/*_resume.tex
-resume_tailor/templates/*_resume.pdf
-resume_tailor/templates/*_resume.out
-resume_tailor/templates/*_resume.log
-resume_tailor/templates/*_resume.aux
-resume_tailor/download_Llama2_and_BigDL_optimize.py
+chat_resume/templates/*_resume.tex
+chat_resume/templates/*_resume.pdf
+chat_resume/templates/*_resume.out
+chat_resume/templates/*_resume.log
+chat_resume/templates/*_resume.aux
+chat_resume/download_Llama2_and_BigDL_optimize.py

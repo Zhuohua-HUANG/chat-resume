@@ -12,7 +12,7 @@ from openai import OpenAI as OriginalOpenAI
 from langchain_openai import OpenAI as LangchainOpenAI
 from pydantic import BaseModel, HttpUrl
 from typing import List, Optional
-from resume_tailor.utils import parse_json_markdown
+from chat_resume.utils import parse_json_markdown
 from langchain_experimental.llms import LMFormatEnforcer
 from transformers import pipeline
 from bigdl.llm.transformers import AutoModel, AutoModelForCausalLM

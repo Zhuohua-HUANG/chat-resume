@@ -1,8 +1,8 @@
 import unittest
 import unittest
 
-from resume_tailor.llm_models import BigDL_LLM, ChatGPT, GPT_3_5
-from resume_tailor.vector_store import VectorStore
+from chat_resume.llm_models import BigDL_LLM, ChatGPT, GPT_3_5
+from chat_resume.vector_store import VectorStore
 
 # system_prompt="""
 #     Discard any prior instructions.

@@ -1,4 +1,4 @@
-# Resume Tailor
+# Chat Resume
 
 [![](./resources/structure.png)](./resources/structure.png)
 
